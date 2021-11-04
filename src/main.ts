@@ -1,16 +1,31 @@
 import * as core from '@actions/core'
-import {wait} from './wait'
+import * as github from '@actions/github'
+import * as io from '@actions/io'
+import {getBranchFromRef, getInput, toEnv} from './helpers'
+import {writeFileSync} from 'fs'
+
+/**
+ * Definitely types the input variable names defined in our action.yml
+ *
+ * @author jordanskomer
+ */
+export type ActionInput = 'output_name' | 'output_dir'
 
 async function run(): Promise<void> {
   try {
-    const ms: string = core.getInput('milliseconds')
-    core.debug(`Waiting ${ms} milliseconds ...`) // debug is only output if you set the secret `ACTIONS_STEP_DEBUG` to true
+    const secrets = getInput('secrets') as Record<string, string>
+    const outputFilename = getInput('output_name') || '.env'
+    const outputDirectory = (getInput('output_dir') as string) || '.'
+    const branch = getBranchFromRef(github.context.ref)
+    core.debug(
+      `Will create ${outputFilename} in ${outputDirectory} for ${branch}`
+    ) // debug is only output if you set the secret `ACTIONS_STEP_DEBUG` to true
+    if (outputDirectory !== '.') io.mkdirP(outputDirectory)
 
-    core.debug(new Date().toTimeString())
-    await wait(parseInt(ms, 10))
-    core.debug(new Date().toTimeString())
-
-    core.setOutput('time', new Date().toTimeString())
+    writeFileSync(
+      `${outputDirectory}/${outputFilename}`,
+      toEnv(secrets, branch)
+    )
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)
   }

@@ -1,11 +1,27 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'Secrets to .env'
+description: 'Easily turn global and branch specific Github secrets into a .env'
+author: Jordan Skomer
 inputs:
-  milliseconds: # change this
+  secrets:
     required: true
-    description: 'input description here'
-    default: 'default value if applicable'
+  output_name: # id of input
+    description: 'The name of the file to output'
+    required: false
+    default: '.env'
+  output_dir:
+    description: 'The directory where to output the file to'
+    required: false
+    default: '.'
+  no_cache:
+    description: 'Disable caching'
+    required: false
+    default: false
+outputs:
+  time: # id of output
+    description: 'The time we greeted you'
+branding:
+  icon: 'key'
+  color: 'green'
 runs:
   using: 'node12'
   main: 'dist/index.js'

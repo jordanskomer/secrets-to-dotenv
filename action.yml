@@ -1,11 +1,36 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'Secrets to .env'
+description: 'Easily turn global and branch specific Github secrets into a .env'
+author: Jordan Skomer
 inputs:
-  milliseconds: # change this
+  secrets_json:
+    description: 'Use ${{ toJson(secrets) }} to pass your repo secrets to the action'
     required: true
-    description: 'input description here'
-    default: 'default value if applicable'
+  branches:
+    description: 'A comma seperated list of the valid branch names to use for branch variable detection. If this is not passed all secrets will be passed into the .env'
+    required: false
+    default: 'main,staging,develop'
+  ignore_branches:
+    description: 'When set to true everything in secrets will be placed into the generated file'
+    required: false
+    default: false
+  output_name: # id of input
+    description: 'The name of the file to output'
+    required: false
+    default: '.env'
+  output_dir:
+    description: 'The directory where to output the file to'
+    required: false
+    default: '.'
+  ignore_errors:
+    description: 'Ignores any errors that will occur and will do its best attempt'
+    required: false
+    default: false
+# outputs:
+#   time: # id of output
+#     description: 'The time we greeted you'
+branding:
+  icon: 'key'
+  color: 'green'
 runs:
   using: 'node12'
   main: 'dist/index.js'

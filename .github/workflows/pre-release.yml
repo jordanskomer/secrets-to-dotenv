@@ -1,60 +1,17 @@
 name: 'pre-release'
-
-on:
+on: # rebuild any PRs and main branch changes
   push:
     branches:
       - main
-      - alpha
       - beta
-      - release/**
-
-defaults:
-  run:
-    shell: bash
+      - alpha
 
 jobs:
-  pre-release:
-    name: Pre Release
+  changelog: # make sure build/ci work properly
     runs-on: ubuntu-latest
-    permissions:
-      packages: write
-      contents: read
-
     steps:
       - uses: actions/checkout@v2
+      - name: Conventional Changelog Action
+        uses: TriPSs/conventional-changelog-action@v3
         with:
-          token: ${{ secrets.FULL_GITHUB_TOKEN }}
-
-      - name: semantic-release
-        uses: ahmadnassri/action-semantic-release@v1
-        env:
-          NPM_TOKEN: ${{ secrets.FULL_GITHUB_TOKEN }}
-          GITHUB_TOKEN: ${{ github.token }}
-
-      # - name: Change Version
-      #   run: |
-      #     if [[ "${{ github.ref }}" == "refs/heads/staging" ]]; then
-      #       npm version minor --no-git-tag-version
-      #     elif [[ "${{ github.ref }}" == "refs/heads/develop" ]]; then
-      #       npm version patch --no-git-tag-version
-      #     else
-      #       npm version major --no-git-tag-version
-      #     fi
-
-      # - name: Get current package version
-      #   id: pkg
-      #   uses: martinbeentjes/npm-get-version-action@v1.1.0
-
-      # - uses: EndBug/add-and-commit@v7 # You can change this to use a specific version
-      #   with:
-      #     # The arguments for the `git add` command (see the paragraph below for more info)
-      #     # Default: '.'
-      #     add: "package.json"
-
-      #     # The message for the commit
-      #     # Default: 'Commit from GitHub Actions (name of the workflow)'
-      #     message: "[RELEASE] v${{ steps.pkg.outputs.current-version }}"
-
-      #     # Arguments for the git tag command (the tag name always needs to be the first word not preceded by an hyphen)
-      #     # Default: ''
-      #     tag: "v${{ steps.pkg.outputs.current-version }} --force"
+          github-token: ${{ github.token }}

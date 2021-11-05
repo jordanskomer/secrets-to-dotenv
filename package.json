@@ -13,7 +13,8 @@
     "test": "jest",
     "pre-act": "npm run build && npm run package",
     "act": "npm run pre-act && act -j test --insecure-secrets",
-    "all": "npm run build && npm run format && npm run lint && npm run package && npm test"
+    "all": "npm run build && npm run format && npm run lint && npm run package && npm test",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -25,6 +26,11 @@
     "dotenv",
     "github secrets"
   ],
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-angular"
+    ]
+  },
   "author": "",
   "license": "MIT",
   "dependencies": {
